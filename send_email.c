@@ -106,7 +106,7 @@ bool send_email(char *from, char *timestamp, char *body)
 
     if (j)
     {
-        while ( j && needle[j] != 0 && needle[j] != ' ' && j < strlen(body) )
+        while ( j && needle[j] != 0 && needle[j] != ' ' && needle[j] != '\n' && j < strlen(body) )
             j++;
         j++;
     }
