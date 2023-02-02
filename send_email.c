@@ -108,7 +108,8 @@ bool send_email(char *from, char *timestamp, char *body)
     {
         while ( j && needle[j] != 0 && needle[j] != ' ' && needle[j] != '\n' && j < strlen(body) )
             j++;
-        j++;
+        if (needle[j] != 0)
+            j++;
     }
 
     fprintf(email_body, "%s", body+j);
