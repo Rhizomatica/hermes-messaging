@@ -30,7 +30,7 @@
 
 #define FROM "15013812345"
 #define NEXMO_API_KEY "yyyyyyyy"
-#define NEXMO_API_SECRET "xxxxxxxxxxxxxxxxx"
+#define NEXMO_API_SECRET "xxxxxxxxxxxxxxxx"
 #define SMS_EMAL_FALLBACK "sms@hermes.radio"
 
 #define BUF_SIZE 4096
@@ -87,16 +87,31 @@ int main(int argc, char *argv[])
 
     // now create the message
     char message[BUF_SIZE];
-
     // get the "FROM"
     sscanf((char *)message_payload, "%[^\n]\n", message);
 
-    strcat (message,"\n");
+    strcat (message,"%0A");
 
     char *body = strstr((char *) message_payload, number);
     body = body + strlen(number) + 1;
 
-    strcat(message, body);
+    size_t message_needle = strlen(message);
+    for (size_t k = 0; k < (message_size - (body - (char *)message_payload)); k++)
+    {
+        if (body[k] == '\n')
+        {
+            message[message_needle] = '%'; message_needle++;
+            message[message_needle] = '0'; message_needle++;
+            message[message_needle] = 'A'; message_needle++;
+        }
+        else
+        {
+            message[message_needle] = body[k];
+            message_needle++;
+        }
+
+    }
+    message[message_needle] = 0;
 
     char cmd[BUF_SIZE];
 
