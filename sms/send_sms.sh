@@ -47,7 +47,7 @@ exit
 
 curl -X "POST" "https://rest.nexmo.com/sms/json" \
   -d "from=$from" \
-  -d "text=$message" \
   -d "to=$to" \
   -d "api_key=xx999999" \
-  -d "api_secret=xxxxxxxxxxxxxx"
+  -d "api_secret=xxxxxxxxxxxxxx" \
+  -d "text=$message"
