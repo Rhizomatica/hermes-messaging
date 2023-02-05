@@ -1,6 +1,13 @@
 CC=gcc
 
-all: http_server https_server dec_message
+LIBRARIES=glib-2.0 gio-2.0
+CFLAGS= -Wall -Wextra -std=gnu17 -g `pkg-config --cflags $(LIBRARIES)`
+LDFLAGS=`pkg-config --libs $(LIBRARIES)` -lm
+
+all: http_server https_server dec_message ofono_daemon
+
+ofono_daemon: ofono_daemon.c
+	$(CC) $(CFLAGS) -o ofono_daemon ofono_daemon.c $(LDFLAGS)
 
 http_server: server.c process_sms.c process_sms.h send_email.c send_email.h
 	$(CC) -Wall -O3 server.c process_sms.c send_email.c -o http_server
