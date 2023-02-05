@@ -325,7 +325,7 @@ void receive()
    }
 
    // add a rule for which messages we want to see
-   dbus_bus_add_match(conn, "type='signal',interface='test.signal.Type'", &err); // see signals from the given interface
+   dbus_bus_add_match(conn, "type='signal',interface='org.ofono.MessageManager'", &err); // see signals from the given interface
    dbus_connection_flush(conn);
    if (dbus_error_is_set(&err)) { 
       fprintf(stderr, "Match Error (%s)\n", err.message);
@@ -347,16 +347,19 @@ void receive()
       }
 
       // check if the message is a signal from the correct interface and with the correct name
-      if (dbus_message_is_signal(msg, "test.signal.Type", "Test")) {
-         
-         // read the parameters
+      if (1 /*dbus_message_is_signal(msg, "test.signal.Type", "Test")*/) {
+          int elem_count = dbus_message_iter_get_element_count(&args);
+          fprintf(stderr, "Element count: %d\n", elem_count);
+
+          // read the parameters
          if (!dbus_message_iter_init(msg, &args))
             fprintf(stderr, "Message Has No Parameters\n");
          else if (DBUS_TYPE_STRING != dbus_message_iter_get_arg_type(&args)) 
             fprintf(stderr, "Argument is not string!\n"); 
          else
             dbus_message_iter_get_basic(&args, &sigvalue);
-         
+
+
          printf("Got Signal with value %s\n", sigvalue);
       }
 
