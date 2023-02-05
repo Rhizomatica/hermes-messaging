@@ -374,20 +374,35 @@ void receive()
           // read the parameters
          if (!dbus_message_iter_init(msg, &args))
             fprintf(stderr, "Message Has No Parameters\n");
-         else if (DBUS_TYPE_STRING != dbus_message_iter_get_arg_type(&args)) 
+         else if (DBUS_TYPE_STRING != dbus_message_iter_get_arg_type(&args))
             fprintf(stderr, "Argument is not string!\n"); 
          else
             dbus_message_iter_get_basic(&args, &sigvalue);
 
-         dbus_message_iter_open_container(&args, DBUS_TYPE_ARRAY,
-                                          OFONO_PROPERTIES_ARRAY_SIGNATURE,
-                                          &dict);
+//        dbus_message_iter_open_container(&args, DBUS_MESSAGE_ITER_TYPE_DICT,
+ //                                         OFONO_PROPERTIES_ARRAY_SIGNATURE,
+  //                                        &dict);
 
 
-         int elem_count = dbus_message_iter_get_element_count(&dict);
-         fprintf(stderr, "Element count: %d\n", elem_count);
+//int 	dbus_message_iter_get_arg_type (DBusMessageIter *iter)
+// 	Returns the argument type of the argument that the message iterator points to. More...
+
+//int 	dbus_message_iter_get_element_type (DBusMessageIter *iter)
+// 	Returns the element type of the array that the message iterator points to. More...
+
+//void 	dbus_message_iter_recurse (DBusMessageIter *iter, DBusMessageIter *sub)
+// 	Recurses into a container value when reading values from a message, initializing a sub-iterator
+
+//         int elem_count = dbus_message_iter_get_element_count(&dict);
+ //        fprintf(stderr, "Element count: %d\n", elem_count);
 
          printf("Got Signal with value %s\n", sigvalue);
+
+         dbus_message_iter_next(&args);
+         dbus_message_iter_get_basic(&args, &sigvalue);
+
+         printf("Got Signal with value %s\n", sigvalue);
+
       }
 
       // free the message
