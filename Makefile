@@ -1,6 +1,7 @@
 CC=gcc
 
-LIBRARIES=glib-2.0 gio-2.0
+#LIBRARIES=glib-2.0 gio-2.0
+LIBRARIES=dbus-1
 CFLAGS= -Wall -Wextra -std=gnu17 -g `pkg-config --cflags $(LIBRARIES)`
 LDFLAGS=`pkg-config --libs $(LIBRARIES)` -lm
 
@@ -24,4 +25,4 @@ install:
 
 .PHONY: clean
 clean:
-	rm -f http_server https_server dec_message
+	rm -f http_server https_server dec_message ofono_daemon
