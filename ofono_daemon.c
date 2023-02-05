@@ -348,8 +348,7 @@ void receive()
 
       // check if the message is a signal from the correct interface and with the correct name
       if (1 /*dbus_message_is_signal(msg, "test.signal.Type", "Test")*/) {
-          int elem_count = dbus_message_iter_get_element_count(&args);
-          fprintf(stderr, "Element count: %d\n", elem_count);
+          fprintf(stderr, "Interface: %s\n", dbus_message_get_interface (msg));
 
           // read the parameters
          if (!dbus_message_iter_init(msg, &args))
@@ -359,6 +358,8 @@ void receive()
          else
             dbus_message_iter_get_basic(&args, &sigvalue);
 
+         int elem_count = dbus_message_iter_get_element_count(&args);
+         fprintf(stderr, "Element count: %d\n", elem_count);
 
          printf("Got Signal with value %s\n", sigvalue);
       }
