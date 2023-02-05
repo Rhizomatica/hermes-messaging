@@ -5,6 +5,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define OFONO_API_SUBJECT_TO_CHANGE
+#include <ofono/dbus.h>
+
 /**
  * Connect to the DBUS bus and send a broadcast signal
  */
@@ -293,7 +296,7 @@ void listen()
 void receive()
 {
    DBusMessage* msg;
-   DBusMessageIter args;
+   DBusMessageIter args, dict;
    DBusConnection* conn;
    DBusError err;
    int ret;
@@ -332,6 +335,23 @@ void receive()
       exit(1); 
    }
    printf("Match rule sent\n");
+//signal time=1675622773.779557 sender=:1.19 -> destination=(null destination) serial=934 path=/quectelqmi_0; interface=org.ofono.MessageManager; member=IncomingMessage
+//   string "Vai
+// Que vai"
+//  array [
+//     dict entry(
+//       string "LocalSentTime"
+//       variant             string "2023-02-05T21:46:12+0300"
+//    )
+//    dict entry(
+//       string "SentTime"
+//       variant             string "2023-02-05T21:46:12+0300"
+//    )
+//    dict entry(
+//       string "Sender"
+//       variant             string "+79096274557"
+//    )
+// ]
 
    // loop listening for signals being emmitted
    while (true) {
@@ -346,10 +366,11 @@ void receive()
          continue;
       }
 
-      // check if the message is a signal from the correct interface and with the correct name
-      if (1 /*dbus_message_is_signal(msg, "test.signal.Type", "Test")*/) {
-          fprintf(stderr, "Interface: %s\n", dbus_message_get_interface (msg));
-
+      char *interface = dbus_message_get_interface (msg);
+//      if (!strcmp(interface, "org.ofono.MessageManager"))
+      if (dbus_message_is_signal(msg, "org.ofono.MessageManager", "IncomingMessage") ||
+          dbus_message_is_signal(msg, "org.ofono.MessageManager", "ImmediateMessage") )
+      {
           // read the parameters
          if (!dbus_message_iter_init(msg, &args))
             fprintf(stderr, "Message Has No Parameters\n");
@@ -358,7 +379,12 @@ void receive()
          else
             dbus_message_iter_get_basic(&args, &sigvalue);
 
-         int elem_count = dbus_message_iter_get_element_count(&args);
+         dbus_message_iter_open_container(&args, DBUS_TYPE_ARRAY,
+                                          OFONO_PROPERTIES_ARRAY_SIGNATURE,
+                                          &dict);
+
+
+         int elem_count = dbus_message_iter_get_element_count(&dict);
          fprintf(stderr, "Element count: %d\n", elem_count);
 
          printf("Got Signal with value %s\n", sigvalue);
