@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #define OFONO_API_SUBJECT_TO_CHANGE
 #include <ofono/dbus.h>
@@ -13,14 +14,16 @@
  */
 void receive()
 {
-   DBusMessage* msg;
+   DBusMessage *msg;
    DBusMessageIter args, entry, string, internal;
-   DBusConnection* conn;
+   DBusConnection *conn;
    DBusError err;
    int ret;
-   char* sigvalue;
-
-   printf("Listening for signals\n");
+   char *sigvalue;
+   char *sender;
+   char *message;
+   char *sent_time;
+   char *local_sent_time;
 
    // initialise the errors
    dbus_error_init(&err);
@@ -100,6 +103,7 @@ void receive()
             dbus_message_iter_get_basic(&args, &sigvalue);
 
          printf("Got Message:\n%s\n", sigvalue);
+         message = strdup(interface);
 
          dbus_message_iter_next(&args);
 
@@ -117,22 +121,23 @@ void receive()
          while (dbus_message_iter_get_arg_type(&entry) == DBUS_TYPE_DICT_ENTRY)
          {
              const char *interface;
-             //dbus_message_iter_get_basic(&entry, &interface);
-             //printf("Got interface: %s\n", interface);
 
              dbus_message_iter_recurse(&entry, &string);
              dbus_message_iter_get_basic(&string, &interface);
              printf("Got value: %s\n", interface);
-             dbus_message_iter_next(&string);
-             while (dbus_message_iter_get_arg_type(&string) == DBUS_TYPE_VARIANT)
+             if ( !strcmp(interface, "LocalSentTime") || !strcmp(interface, "SentTime") || !strcmp(interface, "Sender") )
              {
-//                 char *variant_sign = dbus_message_iter_get_signature(&string);
- //                printf("variant: %s", variant_sign);
- //                dbus_free(variant_sign);
-
+                 dbus_message_iter_next(&string);
+                 // if (dbus_message_iter_get_arg_type(&string) == DBUS_TYPE_VARIANT)
                  dbus_message_iter_recurse(&string, &internal);
                  dbus_message_iter_get_basic(&internal, &interface);
                  printf("Got value: %s\n", interface);
+                 if (!strcmp(interface, "LocalSentTime"))
+                     local_sent_time = strdup(interface);
+                 if (!strcmp(interface, "SentTime"))
+                     sent_time = strdup(interface);
+                 if (!strcmp(interface, "Sender"))
+                     sender = strdup(interface);
 
                  dbus_message_iter_next(&string);
              }
@@ -140,39 +145,11 @@ void receive()
              dbus_message_iter_next(&entry);
          }
 
-         // what to do here?
-
-//        dbus_message_iter_open_container(&args, DBUS_MESSAGE_ITER_TYPE_DICT,
- //                                         OFONO_PROPERTIES_ARRAY_SIGNATURE,
-  //                                        &dict);
-
-
-//int 	dbus_message_iter_get_arg_type (DBusMessageIter *iter)
-// 	Returns the argument type of the argument that the message iterator points to. More...
-
-//int 	dbus_message_iter_get_element_type (DBusMessageIter *iter)
-// 	Returns the element type of the array that the message iterator points to. More...
-
-//void 	dbus_message_iter_recurse (DBusMessageIter *iter, DBusMessageIter *sub)
-// 	Recurses into a container value when reading values from a message, initializing a sub-iterator
-
-//         int elem_count = dbus_message_iter_get_element_count(&dict);
- //        fprintf(stderr, "Element count: %d\n", elem_count);
-
-         // fprintf(stderr, "container: %s\n",dbus_message_get_container_instance(msg));
-//         fprintf(stderr,"container: %s\n",dbus_message_get_data(msg,0));
-
-//         dbus_message_iter_next(&args);
-
-//         if (dbus_message_iter_get_arg_type(&args) == DBUS_MESSAGE_ITER_TYPE_DICT)
-//             fprintf(stderr, "-- dict type\n");
-//         if (dbus_message_iter_get_arg_type(&args) == DBUS_MESSAGE_ITER_TYPE_ARRAY)
-//             fprintf(stderr, "-- array type\n");
-
-//         dbus_message_iter_get_basic(&args, &sigvalue);
-
-//         printf("Got Signal with value %s\n", sigvalue);
-
+         // process(sms);
+         free(sender);
+         free(message);
+         free(sent_time);
+         free(local_sent_time);
       }
 
       // free the message
