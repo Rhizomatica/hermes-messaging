@@ -108,6 +108,16 @@ void receive()
 
          dbus_message_iter_recurse(&args, &entry);
 
+         if (dbus_message_iter_get_arg_type(&entry) == DBUS_TYPE_ARRAY)
+             printf("array!\n");
+         else if (dbus_message_iter_get_arg_type(&entry) == DBUS_TYPE_STRING)
+             printf("string!\n");
+         else
+         {
+             printf("unknow: %d\n", dbus_message_iter_get_arg_type(&entry));
+             continue;
+         }
+
          while (dbus_message_iter_get_arg_type(&entry) == DBUS_TYPE_STRING) {
              const char *interface;
              dbus_message_iter_get_basic(&entry, &interface);
