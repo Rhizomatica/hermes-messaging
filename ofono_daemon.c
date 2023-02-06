@@ -14,7 +14,7 @@
 void receive()
 {
    DBusMessage* msg;
-   DBusMessageIter args, entry, string;
+   DBusMessageIter args, entry, string, internal;
    DBusConnection* conn;
    DBusError err;
    int ret;
@@ -126,9 +126,14 @@ void receive()
              dbus_message_iter_next(&string);
              while (dbus_message_iter_get_arg_type(&string) == DBUS_TYPE_VARIANT)
              {
-                 char *variant_sign = dbus_message_iter_get_signature(&string);
-                 printf("variant: %s", variant_sign);
-                 dbus_free(variant_sign);
+//                 char *variant_sign = dbus_message_iter_get_signature(&string);
+ //                printf("variant: %s", variant_sign);
+ //                dbus_free(variant_sign);
+
+                 dbus_message_iter_recurse(&string, &internal);
+                 dbus_message_iter_get_basic(&internal, &interface);
+                 printf("Got value: %s\n", interface);
+
                  dbus_message_iter_next(&string);
              }
              // next string e golazzo!
