@@ -101,6 +101,11 @@ void receive()
 
          printf("Got Message:\n%s\n", sigvalue);
 
+         dbus_message_iter_next(&args);
+
+         if (dbus_message_iter_get_arg_type(&args) != DBUS_TYPE_ARRAY)
+            continue;
+
          dbus_message_iter_recurse(&args, &entry);
 
          while (dbus_message_iter_get_arg_type(&entry) == DBUS_TYPE_STRING) {
