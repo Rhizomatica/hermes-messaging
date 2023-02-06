@@ -14,7 +14,7 @@
 void receive()
 {
    DBusMessage* msg;
-   DBusMessageIter args, dict;
+   DBusMessageIter args, entry;
    DBusConnection* conn;
    DBusError err;
    int ret;
@@ -99,6 +99,17 @@ void receive()
          else
             dbus_message_iter_get_basic(&args, &sigvalue);
 
+         printf("Got Message:\n%s\n", sigvalue);
+
+         dbus_message_iter_recurse(&args, &entry);
+
+         while (dbus_message_iter_get_arg_type(&entry) == DBUS_TYPE_STRING) {
+             const char *interface;
+             dbus_message_iter_get_basic(&entry, &interface);
+             printf("Got: %s\n", interface);
+             dbus_message_iter_next(&entry);
+         }
+
          // what to do here?
 
 //        dbus_message_iter_open_container(&args, DBUS_MESSAGE_ITER_TYPE_DICT,
@@ -117,8 +128,6 @@ void receive()
 
 //         int elem_count = dbus_message_iter_get_element_count(&dict);
  //        fprintf(stderr, "Element count: %d\n", elem_count);
-
-         printf("Got Signal with value %s\n", sigvalue);
 
          // fprintf(stderr, "container: %s\n",dbus_message_get_container_instance(msg));
 //         fprintf(stderr,"container: %s\n",dbus_message_get_data(msg,0));
