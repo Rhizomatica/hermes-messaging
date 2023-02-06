@@ -52,7 +52,8 @@ void receive()
       fprintf(stderr, "Match Error (%s)\n", err.message);
       exit(1); 
    }
-   printf("Match rule sent\n");
+
+// from dbus-monitor
 //signal time=1675622773.779557 sender=:1.19 -> destination=(null destination) serial=934 path=/quectelqmi_0; interface=org.ofono.MessageManager; member=IncomingMessage
 //   string "Vai
 // Que vai"
@@ -85,6 +86,7 @@ void receive()
       }
 
       char *interface = dbus_message_get_interface (msg);
+      fprintf(stderr, "interface: %s\n", interface);
 //      if (!strcmp(interface, "org.ofono.MessageManager"))
       if (dbus_message_is_signal(msg, "org.ofono.MessageManager", "IncomingMessage") ||
           dbus_message_is_signal(msg, "org.ofono.MessageManager", "ImmediateMessage") )
@@ -118,10 +120,19 @@ void receive()
 
          printf("Got Signal with value %s\n", sigvalue);
 
-         dbus_message_iter_next(&args);
-         dbus_message_iter_get_basic(&args, &sigvalue);
+         // fprintf(stderr, "container: %s\n",dbus_message_get_container_instance(msg));
+         fprintf(stderr,"container: %s\n",dbus_message_get_data(msg,0));
 
-         printf("Got Signal with value %s\n", sigvalue);
+//         dbus_message_iter_next(&args);
+
+//         if (dbus_message_iter_get_arg_type(&args) == DBUS_MESSAGE_ITER_TYPE_DICT)
+//             fprintf(stderr, "-- dict type\n");
+//         if (dbus_message_iter_get_arg_type(&args) == DBUS_MESSAGE_ITER_TYPE_ARRAY)
+//             fprintf(stderr, "-- array type\n");
+
+//         dbus_message_iter_get_basic(&args, &sigvalue);
+
+//         printf("Got Signal with value %s\n", sigvalue);
 
       }
 
