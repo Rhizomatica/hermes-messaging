@@ -124,9 +124,13 @@ void receive()
              dbus_message_iter_get_basic(&string, &interface);
              printf("Got value: %s\n", interface);
              dbus_message_iter_next(&string);
-             dbus_message_iter_get_basic(&string, &interface);
-             printf("Got value: %s\n", interface);
-
+             while (dbus_message_iter_get_arg_type(&string) == DBUS_TYPE_VARIANT)
+             {
+                 char *variant_sign = dbus_message_iter_get_signature(&string);
+                 printf("variant: %s", variant_sign);
+                 dbus_free(variant_sign);
+                 dbus_message_iter_next(&string);
+             }
              // next string e golazzo!
              dbus_message_iter_next(&entry);
          }
