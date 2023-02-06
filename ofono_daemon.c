@@ -85,7 +85,7 @@ void receive()
          continue;
       }
 
-      char *interface = dbus_message_get_interface (msg);
+      const char *interface = dbus_message_get_interface (msg);
       fprintf(stderr, "interface: %s\n", interface);
 //      if (!strcmp(interface, "org.ofono.MessageManager"))
       if (dbus_message_is_signal(msg, "org.ofono.MessageManager", "IncomingMessage") ||
@@ -111,20 +111,23 @@ void receive()
          if (dbus_message_iter_get_arg_type(&entry) != DBUS_TYPE_DICT_ENTRY)
              continue;
 
-         int items = dbus_message_iter_get_array_len(&entry);
-
-         printf("length: %d\n", items);
+//         int items = dbus_message_iter_get_array_len(&entry);
+//         printf("length: %d\n", items);
 
          while (dbus_message_iter_get_arg_type(&entry) == DBUS_TYPE_DICT_ENTRY)
          {
-             char *interface;
+             const char *interface;
              //dbus_message_iter_get_basic(&entry, &interface);
              //printf("Got interface: %s\n", interface);
 
              dbus_message_iter_recurse(&entry, &string);
              dbus_message_iter_get_basic(&string, &interface);
              printf("Got value: %s\n", interface);
+             dbus_message_iter_next(&string);
+             dbus_message_iter_get_basic(&string, &interface);
+             printf("Got value: %s\n", interface);
 
+             // next string e golazzo!
              dbus_message_iter_next(&entry);
          }
 
