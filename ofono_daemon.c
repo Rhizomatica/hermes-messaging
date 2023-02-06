@@ -121,7 +121,7 @@ void receive()
          printf("Got Signal with value %s\n", sigvalue);
 
          // fprintf(stderr, "container: %s\n",dbus_message_get_container_instance(msg));
-         fprintf(stderr,"container: %s\n",dbus_message_get_data(msg,0));
+//         fprintf(stderr,"container: %s\n",dbus_message_get_data(msg,0));
 
 //         dbus_message_iter_next(&args);
 
