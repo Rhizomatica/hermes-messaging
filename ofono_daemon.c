@@ -14,7 +14,7 @@
 void receive()
 {
    DBusMessage* msg;
-   DBusMessageIter args, entry;
+   DBusMessageIter args, entry, string;
    DBusConnection* conn;
    DBusError err;
    int ret;
@@ -108,20 +108,23 @@ void receive()
 
          dbus_message_iter_recurse(&args, &entry);
 
-         if (dbus_message_iter_get_arg_type(&entry) == DBUS_TYPE_ARRAY)
-             printf("array!\n");
-         else if (dbus_message_iter_get_arg_type(&entry) == DBUS_TYPE_STRING)
-             printf("string!\n");
-         else
-         {
-             printf("unknow: %d\n", dbus_message_iter_get_arg_type(&entry));
+         if (dbus_message_iter_get_arg_type(&entry) != DBUS_TYPE_DICT_ENTRY)
              continue;
-         }
 
-         while (dbus_message_iter_get_arg_type(&entry) == DBUS_TYPE_STRING) {
+         int items = dbus_message_iter_get_array_len(&entry);
+
+         printf("length: %d\n", items);
+
+         while (dbus_message_iter_get_arg_type(&entry) == DBUS_TYPE_DICT_ENTRY)
+         {
              const char *interface;
              dbus_message_iter_get_basic(&entry, &interface);
-             printf("Got: %s\n", interface);
+             printf("Got interface: %s\n", interface);
+
+             dbus_message_iter_recurse(&entry, &string);
+             dbus_message_iter_get_basic(&string, &interface);
+             printf("Got value: %s\n", interface);
+
              dbus_message_iter_next(&entry);
          }
 
