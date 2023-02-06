@@ -117,9 +117,9 @@ void receive()
 
          while (dbus_message_iter_get_arg_type(&entry) == DBUS_TYPE_DICT_ENTRY)
          {
-             const char *interface;
-             dbus_message_iter_get_basic(&entry, &interface);
-             printf("Got interface: %s\n", interface);
+             char *interface;
+             //dbus_message_iter_get_basic(&entry, &interface);
+             //printf("Got interface: %s\n", interface);
 
              dbus_message_iter_recurse(&entry, &string);
              dbus_message_iter_get_basic(&string, &interface);
