@@ -33,7 +33,8 @@
 // mail -s "teste" rafael2k@hermes.radio
 
 #define SUBJECT "SMS HERMES"
-#define FROM "sms@hermes.radio"
+#define FROM "default_from@provider.host"
+#define DEFAULT_TO "default_to@provider.host"
 
 bool send_email(char *from, char *timestamp, char *body)
 {
@@ -63,7 +64,7 @@ bool send_email(char *from, char *timestamp, char *body)
         }
         else
         {
-            strcat (mail_cmd, FROM);
+            strcat (mail_cmd, DEFAULT_TO);
         }
     }
     if(email_count && dest_email2[0])
@@ -96,7 +97,7 @@ bool send_email(char *from, char *timestamp, char *body)
 
     // skip the emails from the body
     char *needle = body;
-    int j = 0;
+    size_t j = 0;
     for (int i = 0; i < email_count; i++)
     {
         while (needle[j] != '@')

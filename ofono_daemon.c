@@ -9,9 +9,8 @@
 #define OFONO_API_SUBJECT_TO_CHANGE
 #include <ofono/dbus.h>
 
-/**
- * Listens for signals on the bus
- */
+#include "send_email.h"
+
 void receive()
 {
    DBusMessage *msg;
@@ -145,11 +144,13 @@ void receive()
              dbus_message_iter_next(&entry);
          }
 
+         send_email(sender, sent_time, message);
          // process(sms);
          free(sender);
          free(message);
          free(sent_time);
          free(local_sent_time);
+         free(message);
       }
 
       // free the message
