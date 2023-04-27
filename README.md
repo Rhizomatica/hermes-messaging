@@ -12,9 +12,16 @@ have roughly the same functionality, and the following parameters:
 
 Add cert.pem and key.pem in the local directory for the https_server to work.
 
-The received SMS in the format "<email1> [<email2> <email3>] message text" will be
-sent over email.
+The received SMS (from gateway to remote users) in the format
+```
+<email1> [<email2> <email3>] message text
+```
+will be sent over email.
 
+The sending part (from remote station) send email with the format:
+```
+<fone_number> message text
+```
 Some sample scripts to send SMS are in send_sms folder.
 
 # Author
